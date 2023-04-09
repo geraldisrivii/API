@@ -2,35 +2,26 @@
 
 // GET
 
-function getUserFromID($type, $id, $connect)
+function getDataFromID($sql, $connect, $errorMessage = 'Data not found')
 {
-    $sql = '';
-    if ($type == 'managers') {
-        $sql = "SELECT * FROM Managers WHERE id = $id";
-    } elseif ($type == 'movers') {
-        $sql = "SELECT * FROM movers WHERE id = $id";
-    }
     $result = mysqli_query($connect, $sql);
     $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
     if (count($user) == 0) {
         http_response_code(404);
         $response = [
             "status" => "error",
-            "message" => "User not found"
+            "message" => $errorMessage
         ];
         echo json_encode($response);
         die();
     }
     echo json_encode($user);
+    return $user;
 }
 
-function getUsers($type, $connect)
+function getArray($sql, $connect)
 {
-    if ($type == 'managers') {
-        $result = mysqli_query($connect, "SELECT * FROM Managers");
-    } elseif ($type == 'movers') {
-        $result = mysqli_query($connect, "SELECT * FROM movers");
-    }
+    $result = mysqli_query($connect, $sql);
     $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
     echo json_encode($users);
 }

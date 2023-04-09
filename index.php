@@ -34,30 +34,79 @@ $filter = $params[3];
 $connect = mysqli_connect("localhost", "root", "", "LogisticProjectBD");
 switch ($method) {
     case 'GET':
-        GET($type, $connect, $id);
+        GET_method($type, $connect, $id);
         break;
     case 'POST':
-        POST($type, $connect, $id);
+        POST_method($type, $connect, $id);
+        break;
+    case 'LINK':
+        LINK_method($type, $connect, $id, $id2, $filter);
+        break;
+    case 'DELETE':
+        DELETE_method($type, $connect, $id);
+        break;
 }
 
 
-function GET($type, $connect, $id = null)
+function GET_method($type, $connect, $id = null)
 {
     switch ($type) {
         case 'managers':
         case 'movers':
             if (isset($id)) {
-                getUserFromID($type, $id, $connect);
+                $sql = '';
+                if ($type == 'managers') {
+                    $sql = "SELECT * FROM Managers WHERE id = $id";
+                } elseif ($type == 'movers') {
+                    $sql = "SELECT * FROM movers WHERE id = $id";
+                }
+                getDataFromID($sql, $connect);
             } elseif (count($_GET) > 1) {
                 getUserFromData($type, $_GET, $connect);
             } else {
-                getUsers($type, $connect);
+                $sql = '';
+
+                if ($type == 'managers') {
+                    $sql = "SELECT * FROM Managers";
+                } elseif ($type == 'movers') {
+                    $sql = "SELECT * FROM movers";
+                } else {
+                    http_response_code(400);
+                    $response = [
+                        "status" => "error",
+                        "message" => "Unknown type"
+                    ];
+                    echo json_encode($response);
+                    die();
+                }
+                getArray($sql, $connect);
+            }
+            break;
+        case 'tasks':
+            if (isset($id)) {
+                getDataFromID("SELECT * FROM `Tasks` WHERE `id` = '$id'", $connect, 'Task with this id is not found');
+            } else {
+                getArray("SELECT * FROM `Tasks`", $connect);
+            }
+            break;
+        case 'currentTasks':
+            if (isset($id)) {
+                getDataFromID("SELECT * FROM `CurrentTasks` WHERE `id` = '$id'", $connect, 'Current Task with this id is not found');
+            } else {
+                getArray("SELECT * FROM `CurrentTasks`", $connect);
+            }
+            break;
+        case 'completedTasks':
+            if (isset($id)) {
+                getDataFromID("SELECT * FROM `CompleatedTasks` WHERE `id` = '$id'", $connect, 'Compleated Task with this id is not found');
+            } else {
+                getArray("SELECT * FROM `CompleatedTasks`", $connect);
             }
             break;
     }
 }
 
-function POST($type, $connect, $id)
+function POST_method($type, $connect, $id)
 {
     switch ($type) {
         case 'managers':
@@ -84,7 +133,31 @@ function POST($type, $connect, $id)
             } else {
                 addTask($_POST, $connect);
             }
+            break;
 
     }
+
+}
+
+function LINK_method($type, $connect, $id, $id2, $filter)
+{
+    switch ($type) {
+        case 'tasks':
+            if (isset($id) && isset($id2) && isset($filter)) {
+                addLink($connect, $id, $id2, $filter);
+            } else {
+                http_response_code(400);
+                $response = [
+                    "status" => "error",
+                    "message" => "All fields are required"
+                ];
+                echo json_encode($response);
+            }
+            break;
+    }
+}
+
+function DELETE_method($type, $connect, $id)
+{
 
 }

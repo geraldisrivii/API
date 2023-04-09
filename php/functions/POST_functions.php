@@ -5,7 +5,6 @@
 
 function addUser($type, $data, $connect)
 {
-
     if ($data['name'] === null || $data['lastName'] === null || $data['password'] === null) {
         http_response_code(400);
         $response = [
