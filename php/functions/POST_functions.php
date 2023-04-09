@@ -5,22 +5,13 @@
 
 function addUser($type, $data, $connect)
 {
-    checkRequest($data, "All fields are required");
-    /* if ($data['name'] === null || $data['lastName'] === null || $data['password'] === null) {
-        http_response_code(400);
-        $response = [
-            "status" => "error",
-            "message" => "All fields are required"
-        ];
-        echo json_encode($response);
-        die();
-    } */
-
     $name = $data['name'];
     $lastName = $data['lastName'];
     $password = $data['password'];
 
-    $sql = "";
+    checkRequest([$name, $lastName, $password], "All fields are required");
+
+    $sql = null;
 
     if ($type === 'managers') {
         $sql = "INSERT INTO Managers (`id`, `name`, `lastName`, `password`) VALUES (NULL, '$name', '$lastName', '$password')";
@@ -30,16 +21,8 @@ function addUser($type, $data, $connect)
 
     mysqli_query($connect, $sql);
 
-    if (mysqli_error($connect)) {
-        http_response_code(500);
-        $response = [
-            "status" => "error",
-            "message" => mysqli_error($connect),
-            "sql" => $sql
-        ];
-        echo json_encode($response);
-        die();
-    }
+    checkDataBaseRequest($connect, $sql);
+
     http_response_code(201);
 
     $responseStr = $type . substr(-2, 1);
@@ -57,27 +40,12 @@ function addUser($type, $data, $connect)
 function AddTask($data, $connect)
 {
     $text = $data['text'];
-    if ($text === null) {
-        http_response_code(400);
-        $response = [
-            "status" => "error",
-            "message" => "All fields are required"
-        ];
-        echo json_encode($response);
-    }
+
+    checkRequest([$text], "All fields are required");
 
     mysqli_query($connect, "INSERT INTO Tasks (`id`, `text`) VALUES (NULL, '$text')");
 
-    if (mysqli_error($connect)) {
-        http_response_code(500);
-        $response = [
-            "status" => "error",
-            "message" => mysqli_error($connect),
-            "sql" => "INSERT INTO Tasks (`id`, `text`) VALUES (NULL, '$text')"
-        ];
-        echo json_encode($response);
-        die();
-    }
+    checkDataBaseRequest($connect, "INSERT INTO Tasks (`id`, `text`) VALUES (NULL, '$text')");
 
     http_response_code(201);
 

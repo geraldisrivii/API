@@ -27,16 +27,7 @@ function addLink($connect, $id, $id2, $filter)
 
     mysqli_query($connect, $sql);
 
-    if(mysqli_error($connect)) {
-        http_response_code(500);
-        $response = [
-            "status" => "error",
-            "message" => mysqli_error($connect),
-            "sql" => $sql
-        ];
-        echo json_encode($response);
-        die();
-    }
+    checkDataBaseRequest($connect, $sql);
 
     echo json_encode([
         "status" => "success",

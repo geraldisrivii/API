@@ -5,18 +5,10 @@
 function getDataFromID($sql, $connect, $errorMessage = 'Data not found')
 {
     $result = mysqli_query($connect, $sql);
+    verifyNotNull($result, $errorMessage);
     $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    if (count($user) == 0) {
-        http_response_code(404);
-        $response = [
-            "status" => "error",
-            "message" => $errorMessage
-        ];
-        echo json_encode($response);
-        die();
-    }
+    http_response_code(200);
     echo json_encode($user);
-    return $user;
 }
 
 function getArray($sql, $connect)
@@ -35,39 +27,25 @@ function getUserFromData($type, $data, $connect)
 
     // VALIDATION (Checking if all fields are filled)
 
-    if ($name === null || $lastName === null || $password === null) {
-        http_response_code(400);
-        $response = [
-            "status" => "error",
-            "message" => "All fields are required"
-        ];
-        echo json_encode($response);
-        die();
-    }
+    checkRequest([$name, $lastName, $password], "All fields are required");
 
     // Creating a query
 
-    $sql = '';
+    $sql = null;
     if ($type == 'managers') {
-        $sql = "SELECT * FROM Managers WHERE `name` = '$name' AND `last_name` = '$lastName' AND `password` = '$password'";
+        $sql = "SELECT * FROM Managers WHERE `name` = '$name' AND `lastName` = '$lastName' AND `password` = '$password'";
     } elseif ($type == 'movers') {
-        $sql = "SELECT * FROM movers WHERE `name` = '$name' AND `last_name` = '$lastName' AND `password` = '$password'";
+        $sql = "SELECT * FROM movers WHERE `name` = '$name' AND `lastName` = '$lastName' AND `password` = '$password'";
     }
 
     $result = mysqli_query($connect, $sql);
 
+    verifyNotNull($result, "User not found");
+
     // FETCHING DATA
 
     $people = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    if (count($people) == 0) {
-        http_response_code(404);
-        $response = [
-            "status" => "error",
-            "message" => "User not found"
-        ];
-        echo json_encode($response);
-        die();
-    }
+
     echo json_encode($people[0]);
 
 }

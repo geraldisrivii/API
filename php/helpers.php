@@ -21,11 +21,25 @@ function checkRequest($array, $errorMessage = "All fields are required")
             http_response_code(400);
             $response = [
                 "status" => "error",
-                "message" => "Unknown filter"
+                "message" => $errorMessage
             ];
             echo json_encode($response);
             die();
         }
     }
 
+}
+
+function checkDataBaseRequest($connect, $sql)
+{
+    if (mysqli_error($connect)) {
+        http_response_code(500);
+        $response = [
+            "status" => "error",
+            "message" => mysqli_error($connect),
+            "sql" => $sql
+        ];
+        echo json_encode($response);
+        die();
+    }
 }
