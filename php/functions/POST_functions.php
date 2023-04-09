@@ -5,7 +5,8 @@
 
 function addUser($type, $data, $connect)
 {
-    if ($data['name'] === null || $data['lastName'] === null || $data['password'] === null) {
+    checkRequest($data, "All fields are required");
+    /* if ($data['name'] === null || $data['lastName'] === null || $data['password'] === null) {
         http_response_code(400);
         $response = [
             "status" => "error",
@@ -13,7 +14,7 @@ function addUser($type, $data, $connect)
         ];
         echo json_encode($response);
         die();
-    }
+    } */
 
     $name = $data['name'];
     $lastName = $data['lastName'];
