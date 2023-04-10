@@ -122,7 +122,7 @@ function LINK_method($type, $connect, $id, $id2, $filter)
             if (isset($id) && isset($id2) && isset($filter)) {
                 addLink($connect, $id, $id2, $filter);
             } else {
-               getErorrResponse(400, "required fields are missing. You must send task id, mover id and filter - current or completed link");
+                getErorrResponse(400, "required fields are missing. You must send task id, mover id and filter - current or completed link");
             }
             break;
     }
@@ -130,7 +130,25 @@ function LINK_method($type, $connect, $id, $id2, $filter)
 
 function DELETE_method($type, $connect, $id)
 {
-    if(isset($id)){
-        
+    if (isset($id)) {
+        switch ($type) {
+            case 'tasks':
+                deleteElement("Tasks", $id, $connect);
+                break;
+            case 'current-tasks':
+                deleteElement("CurrentTasks", $id, $connect);
+                break;
+            case 'compleated-tasks':
+                deleteElement("CompleatedTasks", $id, $connect);
+                break;
+            case 'movers':
+                deleteElement("movers", $id, $connect);
+                break;
+            case 'managers':
+                deleteElement("Managers", $id, $connect);
+            default:
+                getErorrResponse(400, "type isn't supported");
+                break;
+        }
     }
 }
