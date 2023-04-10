@@ -70,7 +70,7 @@ function GET_method($type, $connect, $id = null)
                     $sql = "SELECT * FROM Managers";
                 } elseif ($type == 'movers') {
                     $sql = "SELECT * FROM movers";
-                } 
+                }
                 getArray($sql, $connect);
             }
             break;
@@ -100,33 +100,17 @@ function GET_method($type, $connect, $id = null)
 
 function POST_method($type, $connect, $id)
 {
+    if (isset($id)) {
+        getErorrResponse(400, "ID isn't required");
+    }
     switch ($type) {
         case 'managers':
         case 'movers':
-            if (isset($id)) {
-                http_response_code(400);
-                $response = [
-                    "status" => "error",
-                    "message" => "ID isn't required"
-                ];
-                echo json_encode($response);
-            } else {
-                addUser($type, $_POST, $connect);
-            }
+            addUser($type, $_POST, $connect);
             break;
         case 'tasks':
-            if (isset($id)) {
-                http_response_code(400);
-                $response = [
-                    "status" => "error",
-                    "message" => "ID isn't required"
-                ];
-                echo json_encode($response);
-            } else {
-                addTask($_POST, $connect);
-            }
+            addTask($_POST, $connect);
             break;
-
     }
 
 }
@@ -138,12 +122,7 @@ function LINK_method($type, $connect, $id, $id2, $filter)
             if (isset($id) && isset($id2) && isset($filter)) {
                 addLink($connect, $id, $id2, $filter);
             } else {
-                http_response_code(400);
-                $response = [
-                    "status" => "error",
-                    "message" => "All fields are required"
-                ];
-                echo json_encode($response);
+               getErorrResponse(400, "required fields are missing. You must send task id, mover id and filter - current or completed link");
             }
             break;
     }
@@ -151,5 +130,7 @@ function LINK_method($type, $connect, $id, $id2, $filter)
 
 function DELETE_method($type, $connect, $id)
 {
-
+    if(isset($id)){
+        
+    }
 }

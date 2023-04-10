@@ -43,3 +43,14 @@ function checkDataBaseRequest($connect, $sql)
         die();
     }
 }
+
+function getErorrResponse($responseCode, $errorMessage)
+{
+    http_response_code(400);
+    $response = [
+        "status" => "error",
+        "message" => "ID isn't required"
+    ];
+    echo json_encode($response);
+    die();
+}
