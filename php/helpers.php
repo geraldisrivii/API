@@ -49,7 +49,7 @@ function getErorrResponse($responseCode, $errorMessage)
     http_response_code(400);
     $response = [
         "status" => "error",
-        "message" => "ID isn't required"
+        "message" => $errorMessage
     ];
     echo json_encode($response);
     die();

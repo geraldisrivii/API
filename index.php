@@ -45,6 +45,9 @@ switch ($method) {
     case 'DELETE':
         DELETE_method($type, $connect, $id);
         break;
+    case 'PATCH':
+        PATCH_method($type, $connect, $id);
+        break;
 }
 
 
@@ -146,6 +149,34 @@ function DELETE_method($type, $connect, $id)
                 break;
             case 'managers':
                 deleteElement("Managers", $id, $connect);
+            default:
+                getErorrResponse(400, "type isn't supported");
+                break;
+        }
+    }
+}
+
+function PATCH_method($type, $connect, $id)
+{
+
+    $data = file_get_contents('php://input');
+    $data = json_decode($data, true);
+    if (isset($id)) {
+        switch ($type) {
+            case 'tasks':
+                patchElement("Tasks", $id, $data, $connect);
+                break;
+            case 'current-tasks':
+                patchElement("CurrentTasks", $id, $data, $connect);
+                break;
+            case 'compleated-tasks':
+                patchElement("CompleatedTasks", $id, $data, $connect);
+                break;
+            case 'movers':
+                patchElement("movers", $id, $data, $connect);
+                break;
+            case 'managers':
+                patchElement("Managers", $id, $data, $connect);
             default:
                 getErorrResponse(400, "type isn't supported");
                 break;
