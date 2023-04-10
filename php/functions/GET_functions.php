@@ -6,8 +6,8 @@ function getDataFromID($sql, $connect, $errorMessage = 'Data not found')
 {
     $result = mysqli_query($connect, $sql);
     verifyNotNull($result, $errorMessage);
+
     $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    http_response_code(200);
     echo json_encode($user);
 }
 
@@ -15,6 +15,7 @@ function getArray($sql, $connect)
 {
     $result = mysqli_query($connect, $sql);
     $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    
     echo json_encode($users);
 }
 function getUserFromData($type, $data, $connect)
@@ -40,11 +41,14 @@ function getUserFromData($type, $data, $connect)
 
     $result = mysqli_query($connect, $sql);
 
+    checkDataBaseRequest($connect, $sql);
+
     verifyNotNull($result, "User not found");
 
     // FETCHING DATA
 
     $people = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 
     echo json_encode($people[0]);
 

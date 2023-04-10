@@ -64,21 +64,13 @@ function GET_method($type, $connect, $id = null)
             } elseif (count($_GET) > 1) {
                 getUserFromData($type, $_GET, $connect);
             } else {
-                $sql = '';
+                $sql = null;
 
                 if ($type == 'managers') {
                     $sql = "SELECT * FROM Managers";
                 } elseif ($type == 'movers') {
                     $sql = "SELECT * FROM movers";
-                } else {
-                    http_response_code(400);
-                    $response = [
-                        "status" => "error",
-                        "message" => "Unknown type"
-                    ];
-                    echo json_encode($response);
-                    die();
-                }
+                } 
                 getArray($sql, $connect);
             }
             break;
