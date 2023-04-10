@@ -8,7 +8,7 @@ function getDataFromID($sql, $connect, $errorMessage = 'Data not found')
     verifyNotNull($result, $errorMessage);
 
     $user = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    echo json_encode($user);
+    echo json_encode($user[0]);
 }
 
 function getArray($sql, $connect)

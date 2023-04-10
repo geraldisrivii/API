@@ -98,21 +98,31 @@ function GET_method($type, $connect, $id = null)
                 getArray("SELECT * FROM `CompleatedTasks`", $connect);
             }
             break;
+        default:
+            getErorrResponse(400, "type isn't supported");
+            break;
     }
 }
 
 function POST_method($type, $connect, $id)
 {
+    $data = null;
+    if (count($_POST) == 0) {
+        $data = file_get_contents('php://input');
+        $data = json_decode($data, true);
+    } else {
+        $data = $_POST;
+    }
     if (isset($id)) {
         getErorrResponse(400, "ID isn't required");
     }
     switch ($type) {
         case 'managers':
         case 'movers':
-            addUser($type, $_POST, $connect);
+            addUser($type, $data, $connect);
             break;
         case 'tasks':
-            addTask($_POST, $connect);
+            addTask($data, $connect);
             break;
     }
 
