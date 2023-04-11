@@ -65,7 +65,7 @@ function GET_method($type, $connect, $id = null)
                 }
                 getDataFromID($sql, $connect);
             } elseif (count($_GET) > 1) {
-                getUserFromData($type, $_GET, $connect);
+                getElementsFromData($type, $_GET, $connect);
             } else {
                 $sql = null;
 

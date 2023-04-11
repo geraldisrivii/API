@@ -8,15 +8,16 @@ function addUser($type, $data, $connect)
     $name = $data['name'];
     $lastName = $data['lastName'];
     $password = $data['password'];
+    $login = $data['login'];
 
     checkRequest([$name, $lastName, $password], "All fields are required");
 
     $sql = null;
 
     if ($type === 'managers') {
-        $sql = "INSERT INTO Managers (`id`, `name`, `lastName`, `password`) VALUES (NULL, '$name', '$lastName', '$password')";
+        $sql = "INSERT INTO Managers (`id`, `name`, `lastName`, `login`, `password`) VALUES (NULL, '$name', '$lastName', '$login', '$password')";
     } elseif ($type === 'movers') {
-        $sql = "INSERT INTO movers (`id`, `name`, `lastName`, `password`, `isEnabled`) VALUES (NULL, '$name', '$lastName', '$password', 0)";
+        $sql = "INSERT INTO movers (`id`, `name`, `lastName`, `login`, `password`, `isEnabled`) VALUES (NULL, '$name', '$lastName', '$login', '$password', 0)";
     }
 
     mysqli_query($connect, $sql);
