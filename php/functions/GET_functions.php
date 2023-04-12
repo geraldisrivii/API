@@ -15,22 +15,28 @@ function getArray($sql, $connect)
 {
     $result = mysqli_query($connect, $sql);
     $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    
+
     echo json_encode($users);
 }
 
-function getElementsFromData($type, $data, $connect){
+function getElementsFromData($type, $data, $connect)
+{
     $dataTableName = null;
-    if($type == 'managers'){
+    if ($type == 'managers') {
         $dataTableName = 'Managers';
-    } else {
+    } elseif ($type == 'movers') {
         $dataTableName = 'movers';
+    } elseif ($type == 'currentTasks') {
+        $dataTableName = 'CurrentTasks';
+    } elseif ($type == 'completedTasks') {
+        $dataTableName = 'CompletedTasks';
     }
+
     $sql = "SELECT * FROM $dataTableName WHERE ";
 
     array_shift($data);
     foreach ($data as $key => $value) {
-        $sql = $sql .  "`$key` = '$value' AND ";
+        $sql = $sql . "`$key` = $value AND ";
     }
 
     $sql = substr($sql, 0, -5) . ";";

@@ -40,13 +40,14 @@ function addUser($type, $data, $connect)
 
 function AddTask($data, $connect)
 {
-    $text = $data['text'];
+    $title = $data['title'];
+    $price = $data['price'];
 
-    checkRequest([$text], "All fields are required");
+    checkRequest([$title, $price], "All fields are required");
 
-    mysqli_query($connect, "INSERT INTO Tasks (`id`, `text`) VALUES (NULL, '$text')");
+    mysqli_query($connect, "INSERT INTO Tasks (`id`, `title` , `price`) VALUES (NULL, '$title', '$price')");
 
-    checkDataBaseRequest($connect, "INSERT INTO Tasks (`id`, `text`) VALUES (NULL, '$text')");
+    checkDataBaseRequest($connect, "INSERT INTO Tasks (`id`, `title` , `price`) VALUES (NULL,  '$title', '$price')");
 
     http_response_code(201);
 

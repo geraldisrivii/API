@@ -87,15 +87,19 @@ function GET_method($type, $connect, $id = null)
         case 'currentTasks':
             if (isset($id)) {
                 getDataFromID("SELECT * FROM `CurrentTasks` WHERE `id` = '$id'", $connect, 'Current Task with this id is not found');
+            } elseif (count($_GET) > 1) {
+                getElementsFromData($type, $_GET, $connect);
             } else {
                 getArray("SELECT * FROM `CurrentTasks`", $connect);
             }
             break;
         case 'completedTasks':
             if (isset($id)) {
-                getDataFromID("SELECT * FROM `CompleatedTasks` WHERE `id` = '$id'", $connect, 'Compleated Task with this id is not found');
+                getDataFromID("SELECT * FROM `CompletedTasks` WHERE `id` = '$id'", $connect, 'Compleated Task with this id is not found');
+            } elseif (count($_GET) > 1) {
+                getElementsFromData($type, $_GET, $connect);
             } else {
-                getArray("SELECT * FROM `CompleatedTasks`", $connect);
+                getArray("SELECT * FROM `CompletedTasks`", $connect);
             }
             break;
         default:
