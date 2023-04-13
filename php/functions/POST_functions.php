@@ -3,8 +3,18 @@
 // POST
 
 
-function addUser($type, $data, $connect)
+function addElement($DataBaseTableName, $data, $connect)
 {
+    $sql = "INSERT INTO $DataBaseTableName (";
+    foreach ($data as $key => $value) {
+        $sql = $sql .  "$key, ";
+    }
+    $sql = substr($sql, 0, -2) . ") VALUES (";
+    foreach ($data as $key => $value) {
+        $sql = $sql .  "$value, ";
+    }
+    $sql = substr($sql, 0, -2) . ")";
+    die(print_r($sql));
     /* $name = $data['name'];
     $lastName = $data['lastName'];
     $password = $data['password'];
@@ -14,11 +24,11 @@ function addUser($type, $data, $connect)
 
     $sql = null;
 
-    if ($type === 'managers') {
+   /*  if ($type === 'managers') {
         $sql = "INSERT INTO Managers (`id`, `name`, `lastName`, `login`, `password`) VALUES (NULL, '$name', '$lastName', '$login', '$password')";
     } elseif ($type === 'movers') {
         $sql = "INSERT INTO Movers (`id`, `name`, `lastName`, `login`, `password`, `isEnabled`) VALUES (NULL, '$name', '$lastName', '$login', '$password', 0)";
-    }
+    } */
 
     mysqli_query($connect, $sql);
 

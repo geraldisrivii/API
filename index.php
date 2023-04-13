@@ -89,6 +89,12 @@ function GET_method($AvailibleTypes, $type, $connect, $id = null)
 
 function POST_method($AvailibleTypes, $type, $connect, $id)
 {
+    $firstSymbol = substr($type, 0, 1);
+
+    $firstSymbolCapital = mb_strtoupper($firstSymbol);
+
+    $DataBaseTableName = $firstSymbolCapital . substr($type, 1);
+
     $data = null;
     if (count($_POST) == 0) {
         $data = file_get_contents('php://input');
@@ -102,8 +108,7 @@ function POST_method($AvailibleTypes, $type, $connect, $id)
 
 
 
-    addUser($type, $data, $connect);
-    addTask($data, $connect);
+    addElement($DataBaseTableName, $data, $connect);
 }
 
 function LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter)
