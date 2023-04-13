@@ -5,12 +5,12 @@
 
 function addUser($type, $data, $connect)
 {
-    $name = $data['name'];
+    /* $name = $data['name'];
     $lastName = $data['lastName'];
     $password = $data['password'];
-    $login = $data['login'];
+    $login = $data['login']; */
 
-    checkRequest([$name, $lastName, $password], "All fields are required");
+    /* checkRequest([$name, $lastName, $password], "All fields are required"); */
 
     $sql = null;
 

@@ -1,6 +1,18 @@
 <?php
 
-
+function CheckType($type, $AvailibleTypes)
+{
+    $isSet = false;
+    foreach ($AvailibleTypes as $value) {
+        if ($type == $value) {
+            $isSet = true;
+            break;
+        }
+    }
+    if($isSet !== true){
+        getErorrResponse(400, "type isn't supported");
+    }
+}
 function verifyNotNull($result, $errorMessage = "Object isn't found")
 {
     if ($result->num_rows == 0) {

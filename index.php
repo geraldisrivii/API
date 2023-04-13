@@ -32,83 +32,62 @@ $id2 = $params[2];
 $filter = $params[3];
 
 $connect = mysqli_connect("localhost", "root", "", "LogisticProjectBD");
+
+$AvailibleTypes = [
+    'managers',
+    'movers',
+    'tasks',
+    'currentTasks',
+    'completedTasks'
+];
+
+
+
 switch ($method) {
     case 'GET':
-        GET_method($type, $connect, $id);
+        GET_method($AvailibleTypes, $type, $connect, $id);
         break;
     case 'POST':
-        POST_method($type, $connect, $id);
+        POST_method($AvailibleTypes, $type, $connect, $id);
         break;
     case 'LINK':
-        LINK_method($type, $connect, $id, $id2, $filter);
+        LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter);
         break;
     case 'DELETE':
-        DELETE_method($type, $connect, $id);
+        DELETE_method($AvailibleTypes, $type, $connect, $id);
         break;
     case 'PATCH':
-        PATCH_method($type, $connect, $id);
+        PATCH_method($AvailibleTypes, $type, $connect, $id);
         break;
 }
 
 
-function GET_method($type, $connect, $id = null)
-{
-    if (count($_GET) > 1) {
-        getElementsFromData($type, $_GET, $connect);
-    } 
-    else{
 
-        switch ($type) {
-            case 'managers':
-            case 'movers':
-                if (isset($id)) {
-                    $sql = '';
-                    if ($type == 'managers') {
-                        $sql = "SELECT * FROM Managers WHERE id = $id";
-                    } elseif ($type == 'movers') {
-                        $sql = "SELECT * FROM movers WHERE id = $id";
-                    }
-                    getDataFromID($sql, $connect);
-                } else {
-                    $sql = null;
-    
-                    if ($type == 'managers') {
-                        $sql = "SELECT * FROM Managers";
-                    } elseif ($type == 'movers') {
-                        $sql = "SELECT * FROM movers";
-                    }
-                    getArray($sql, $connect);
-                }
-                break;
-            case 'tasks':
-                if (isset($id)) {
-                    getDataFromID("SELECT * FROM `Tasks` WHERE `id` = '$id'", $connect, 'Task with this id is not found');
-                } else {
-                    getArray("SELECT * FROM `Tasks`", $connect);
-                }
-                break;
-            case 'currentTasks':
-                if (isset($id)) {
-                    getDataFromID("SELECT * FROM `CurrentTasks` WHERE `id` = '$id'", $connect, 'Current Task with this id is not found');
-                }  else {
-                    getArray("SELECT * FROM `CurrentTasks`", $connect);
-                }
-                break;
-            case 'completedTasks':
-                if (isset($id)) {
-                    getDataFromID("SELECT * FROM `CompletedTasks` WHERE `id` = '$id'", $connect, 'Compleated Task with this id is not found');
-                }  else {
-                    getArray("SELECT * FROM `CompletedTasks`", $connect);
-                }
-                break;
-            default:
-                getErorrResponse(400, "type isn't supported");
-                break;
-        }
+function GET_method($AvailibleTypes, $type, $connect, $id = null)
+{
+
+    checkType($type, $AvailibleTypes);
+
+    // Converting type to DataBaseTableName
+    $firstSymbol = substr($type, 0, 1);
+
+    $firstSymbolCapital = mb_strtoupper($firstSymbol);
+
+    $DataBaseTableName = $firstSymbolCapital . substr($type, 1);
+    $sql = "SELECT * FROM $DataBaseTableName";
+
+
+    if (isset($id)) {
+        $sql = $sql . " WHERE `id` = '$id'";
+        getDataFromID($sql, $connect);
+    } elseif (count($_GET) > 1) {
+        getElementsFromData($type, $_GET, $connect);
+    } else {
+        getArray($sql, $connect);
     }
 }
 
-function POST_method($type, $connect, $id)
+function POST_method($AvailibleTypes, $type, $connect, $id)
 {
     $data = null;
     if (count($_POST) == 0) {
@@ -120,19 +99,14 @@ function POST_method($type, $connect, $id)
     if (isset($id)) {
         getErorrResponse(400, "ID isn't required");
     }
-    switch ($type) {
-        case 'managers':
-        case 'movers':
-            addUser($type, $data, $connect);
-            break;
-        case 'tasks':
-            addTask($data, $connect);
-            break;
-    }
 
+
+
+    addUser($type, $data, $connect);
+    addTask($data, $connect);
 }
 
-function LINK_method($type, $connect, $id, $id2, $filter)
+function LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter)
 {
     switch ($type) {
         case 'tasks':
@@ -145,7 +119,7 @@ function LINK_method($type, $connect, $id, $id2, $filter)
     }
 }
 
-function DELETE_method($type, $connect, $id)
+function DELETE_method($AvailibleTypes, $type, $connect, $id)
 {
     if (isset($id)) {
         switch ($type) {
@@ -170,7 +144,7 @@ function DELETE_method($type, $connect, $id)
     }
 }
 
-function PATCH_method($type, $connect, $id)
+function PATCH_method($AvailibleTypes, $type, $connect, $id)
 {
 
     $data = file_get_contents('php://input');
