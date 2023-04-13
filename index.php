@@ -71,8 +71,9 @@ function GET_method($AvailibleTypes, $type, $connect, $id = null)
 
     $sql = "SELECT * FROM $DataBaseTableName";
 
-
-    if (isset($id)) {
+    if($type == 'converted_CurrentTasks' || $type == 'converted_CompletedTasks'){
+        getConvertedTasks($type, $connect);
+    } else if (isset($id)) {
         $sql = $sql . " WHERE `id` = '$id'";
         getDataFromID($sql, $connect);
     } elseif (count($_GET) > 1) {
@@ -106,16 +107,10 @@ function POST_method($AvailibleTypes, $type, $connect, $id)
 
 function LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter)
 {
-    CheckType($type, $AvailibleTypes);
-    $DataBaseTableName = UpSymbol($type);
-    switch ($type) {
-        case 'tasks':
-            if (isset($id) && isset($id2) && isset($filter)) {
-                addLink($connect, $id, $id2, $filter);
-            } else {
-                getErorrResponse(400, "required fields are missing. You must send task id, mover id and filter - current or completed link");
-            }
-            break;
+    if (isset($id) && isset($id2) && isset($filter)) {
+        addLink($connect, $id, $id2, $filter);
+    } else {
+        getErorrResponse(400, "required fields are missing. You must send task id, mover id and filter - current or completed link");
     }
 }
 
@@ -141,7 +136,7 @@ function PATCH_method($AvailibleTypes, $type, $connect, $id)
 
     $data = file_get_contents('php://input');
     $data = json_decode($data, true);
-    if(count($data) == 0){
+    if (count($data) == 0) {
         getErorrResponse(400, "Data is empty. You must send data with JSON format. FormData doesn't work");
     }
     if (isset($id)) {

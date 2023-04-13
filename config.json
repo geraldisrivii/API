@@ -4,7 +4,9 @@
         "movers",
         "tasks",
         "currentTasks",
-        "completedTasks"
+        "completedTasks",
+        "converted_CurrentTasks",
+        "converted_CompletedTasks"
     ],
     "availableTypesPOST": [
         "managers",
