@@ -1,0 +1,17 @@
+{
+    "availableTypesGET": [
+        "managers",
+        "movers",
+        "tasks",
+        "currentTasks",
+        "completedTasks"
+    ],
+    "availableTypesPOST": [
+        "managers",
+        "movers",
+        "tasks"
+    ], 
+    "availableTypesLINK": [
+        "tasks"
+    ]
+}

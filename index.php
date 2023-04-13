@@ -38,6 +38,7 @@ $jsonFileArray = json_decode($jsonFileData, true);
 
 $AvailibleTypesGET = $jsonFileArray['availableTypesGET'];
 $AvailibleTypesPOST = $jsonFileArray['availableTypesPOST'];
+$AvailibleTypesLINK = $jsonFileArray['availableTypesLINK'];
 
 
 switch ($method) {
@@ -48,13 +49,13 @@ switch ($method) {
         POST_method($AvailibleTypesPOST, $type, $connect, $id);
         break;
     case 'LINK':
-        LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter);
+        LINK_method($AvailibleTypesLINK, $type, $connect, $id, $id2, $filter);
         break;
     case 'DELETE':
         DELETE_method($AvailibleTypesGET, $type, $connect, $id);
         break;
     case 'PATCH':
-        PATCH_method($AvailibleTypes, $type, $connect, $id);
+        PATCH_method($AvailibleTypesGET, $type, $connect, $id);
         break;
 }
 
@@ -66,11 +67,8 @@ function GET_method($AvailibleTypes, $type, $connect, $id = null)
     checkType($type, $AvailibleTypes);
 
     // Converting type to DataBaseTableName
-    $firstSymbol = substr($type, 0, 1);
+    $DataBaseTableName = UpSymbol($type);
 
-    $firstSymbolCapital = mb_strtoupper($firstSymbol);
-
-    $DataBaseTableName = $firstSymbolCapital . substr($type, 1);
     $sql = "SELECT * FROM $DataBaseTableName";
 
 
@@ -87,11 +85,8 @@ function GET_method($AvailibleTypes, $type, $connect, $id = null)
 function POST_method($AvailibleTypes, $type, $connect, $id)
 {
     checkType($type, $AvailibleTypes);
-    $firstSymbol = substr($type, 0, 1);
 
-    $firstSymbolCapital = mb_strtoupper($firstSymbol);
-
-    $DataBaseTableName = $firstSymbolCapital . substr($type, 1);
+    $DataBaseTableName = UpSymbol($type);
 
     $data = null;
     if (count($_POST) == 0) {
@@ -111,6 +106,8 @@ function POST_method($AvailibleTypes, $type, $connect, $id)
 
 function LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter)
 {
+    CheckType($type, $AvailibleTypes);
+    $DataBaseTableName = UpSymbol($type);
     switch ($type) {
         case 'tasks':
             if (isset($id) && isset($id2) && isset($filter)) {
@@ -125,44 +122,31 @@ function LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter)
 function DELETE_method($AvailibleTypes, $type, $connect, $id)
 {
     CheckType($type, $AvailibleTypes);
-    
-    $firstSymbol = substr($type, 0, 1);
 
-    $firstSymbolCapital = mb_strtoupper($firstSymbol);
+    $DataBaseTableName = UpSymbol($type);
 
-    $DataBaseTableName = $firstSymbolCapital . substr($type, 1);
-    if(isset($id)){
+    if (isset($id)) {
         deleteElement($DataBaseTableName, $id, $connect);
     } else {
         getErorrResponse(400, "ID is required");
     }
-    
+
 }
 
 function PATCH_method($AvailibleTypes, $type, $connect, $id)
 {
+    checkType($type, $AvailibleTypes);
+
+    $DataBaseTableName = UpSymbol($type);
 
     $data = file_get_contents('php://input');
     $data = json_decode($data, true);
+    if(count($data) == 0){
+        getErorrResponse(400, "Data is empty. You must send data with JSON format. FormData doesn't work");
+    }
     if (isset($id)) {
-        switch ($type) {
-            case 'tasks':
-                patchElement("Tasks", $id, $data, $connect);
-                break;
-            case 'currentTasks':
-                patchElement("CurrentTasks", $id, $data, $connect);
-                break;
-            case 'completedTasks':
-                patchElement("CompletedTasks", $id, $data, $connect);
-                break;
-            case 'movers':
-                patchElement("movers", $id, $data, $connect);
-                break;
-            case 'managers':
-                patchElement("Managers", $id, $data, $connect);
-            default:
-                getErorrResponse(400, "type isn't supported");
-                break;
-        }
+        patchElement($DataBaseTableName, $id, $data, $connect);
+    } else {
+        getErorrResponse(400, "ID is required");
     }
 }

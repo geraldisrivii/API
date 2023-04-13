@@ -1,5 +1,14 @@
 <?php
+function UpSymbol($type)
+{
+    $firstSymbol = substr($type, 0, 1);
 
+    $firstSymbolCapital = mb_strtoupper($firstSymbol);
+
+    $DataBaseTableName = $firstSymbolCapital . substr($type, 1);
+
+    return $DataBaseTableName;
+}
 function CheckType($type, $AvailibleTypes)
 {
     $isSet = false;
@@ -9,7 +18,7 @@ function CheckType($type, $AvailibleTypes)
             break;
         }
     }
-    if($isSet !== true){
+    if ($isSet !== true) {
         getErorrResponse(400, "type isn't supported");
     }
 }
