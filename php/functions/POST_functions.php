@@ -11,18 +11,15 @@ function addElement($DataBaseTableName, $data, $connect)
     }
     $sql = substr($sql, 0, -2) . ") VALUES (";
     foreach ($data as $key => $value) {
-        $sql = $sql .  "$value, ";
+        $sql = $sql .  "'$value', ";
     }
     $sql = substr($sql, 0, -2) . ")";
-    die(print_r($sql));
     /* $name = $data['name'];
     $lastName = $data['lastName'];
     $password = $data['password'];
     $login = $data['login']; */
 
     /* checkRequest([$name, $lastName, $password], "All fields are required"); */
-
-    $sql = null;
 
    /*  if ($type === 'managers') {
         $sql = "INSERT INTO Managers (`id`, `name`, `lastName`, `login`, `password`) VALUES (NULL, '$name', '$lastName', '$login', '$password')";
@@ -36,7 +33,7 @@ function addElement($DataBaseTableName, $data, $connect)
 
     http_response_code(201);
 
-    $responseStr = $type . substr(-2, 1);
+    $responseStr = $DataBaseTableName . substr(-2, 1);
 
     $response = [
         "status" => "success",
