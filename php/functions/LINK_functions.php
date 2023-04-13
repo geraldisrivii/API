@@ -19,7 +19,7 @@ function addLink($connect, $id, $id2, $filter)
             $sql = "INSERT INTO `CurrentTasks` (`id`, `user_id`, `task_id`) VALUES (NULL, '$id2', '$id')";
             break;
         case 'completed':
-            $sql = "INSERT INTO `CompleatedTasks` (`id`, `user_id`, `task_id`) VALUES (NULL, '$id2', '$id')";
+            $sql = "INSERT INTO `CompletedTasks` (`id`, `user_id`, `task_id`) VALUES (NULL, '$id2', '$id')";
             break;
     }
 

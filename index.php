@@ -53,58 +53,58 @@ switch ($method) {
 
 function GET_method($type, $connect, $id = null)
 {
-    switch ($type) {
-        case 'managers':
-        case 'movers':
-            if (isset($id)) {
-                $sql = '';
-                if ($type == 'managers') {
-                    $sql = "SELECT * FROM Managers WHERE id = $id";
-                } elseif ($type == 'movers') {
-                    $sql = "SELECT * FROM movers WHERE id = $id";
-                }
-                getDataFromID($sql, $connect);
-            } elseif (count($_GET) > 1) {
-                getElementsFromData($type, $_GET, $connect);
-            } else {
-                $sql = null;
+    if (count($_GET) > 1) {
+        getElementsFromData($type, $_GET, $connect);
+    } 
+    else{
 
-                if ($type == 'managers') {
-                    $sql = "SELECT * FROM Managers";
-                } elseif ($type == 'movers') {
-                    $sql = "SELECT * FROM movers";
+        switch ($type) {
+            case 'managers':
+            case 'movers':
+                if (isset($id)) {
+                    $sql = '';
+                    if ($type == 'managers') {
+                        $sql = "SELECT * FROM Managers WHERE id = $id";
+                    } elseif ($type == 'movers') {
+                        $sql = "SELECT * FROM movers WHERE id = $id";
+                    }
+                    getDataFromID($sql, $connect);
+                } else {
+                    $sql = null;
+    
+                    if ($type == 'managers') {
+                        $sql = "SELECT * FROM Managers";
+                    } elseif ($type == 'movers') {
+                        $sql = "SELECT * FROM movers";
+                    }
+                    getArray($sql, $connect);
                 }
-                getArray($sql, $connect);
-            }
-            break;
-        case 'tasks':
-            if (isset($id)) {
-                getDataFromID("SELECT * FROM `Tasks` WHERE `id` = '$id'", $connect, 'Task with this id is not found');
-            } else {
-                getArray("SELECT * FROM `Tasks`", $connect);
-            }
-            break;
-        case 'currentTasks':
-            if (isset($id)) {
-                getDataFromID("SELECT * FROM `CurrentTasks` WHERE `id` = '$id'", $connect, 'Current Task with this id is not found');
-            } elseif (count($_GET) > 1) {
-                getElementsFromData($type, $_GET, $connect);
-            } else {
-                getArray("SELECT * FROM `CurrentTasks`", $connect);
-            }
-            break;
-        case 'completedTasks':
-            if (isset($id)) {
-                getDataFromID("SELECT * FROM `CompletedTasks` WHERE `id` = '$id'", $connect, 'Compleated Task with this id is not found');
-            } elseif (count($_GET) > 1) {
-                getElementsFromData($type, $_GET, $connect);
-            } else {
-                getArray("SELECT * FROM `CompletedTasks`", $connect);
-            }
-            break;
-        default:
-            getErorrResponse(400, "type isn't supported");
-            break;
+                break;
+            case 'tasks':
+                if (isset($id)) {
+                    getDataFromID("SELECT * FROM `Tasks` WHERE `id` = '$id'", $connect, 'Task with this id is not found');
+                } else {
+                    getArray("SELECT * FROM `Tasks`", $connect);
+                }
+                break;
+            case 'currentTasks':
+                if (isset($id)) {
+                    getDataFromID("SELECT * FROM `CurrentTasks` WHERE `id` = '$id'", $connect, 'Current Task with this id is not found');
+                }  else {
+                    getArray("SELECT * FROM `CurrentTasks`", $connect);
+                }
+                break;
+            case 'completedTasks':
+                if (isset($id)) {
+                    getDataFromID("SELECT * FROM `CompletedTasks` WHERE `id` = '$id'", $connect, 'Compleated Task with this id is not found');
+                }  else {
+                    getArray("SELECT * FROM `CompletedTasks`", $connect);
+                }
+                break;
+            default:
+                getErorrResponse(400, "type isn't supported");
+                break;
+        }
     }
 }
 
@@ -152,11 +152,11 @@ function DELETE_method($type, $connect, $id)
             case 'tasks':
                 deleteElement("Tasks", $id, $connect);
                 break;
-            case 'current-tasks':
+            case 'currentTasks':
                 deleteElement("CurrentTasks", $id, $connect);
                 break;
-            case 'compleated-tasks':
-                deleteElement("CompleatedTasks", $id, $connect);
+            case 'completedTasks':
+                deleteElement("CompletedTasks", $id, $connect);
                 break;
             case 'movers':
                 deleteElement("movers", $id, $connect);
@@ -180,11 +180,11 @@ function PATCH_method($type, $connect, $id)
             case 'tasks':
                 patchElement("Tasks", $id, $data, $connect);
                 break;
-            case 'current-tasks':
+            case 'currentTasks':
                 patchElement("CurrentTasks", $id, $data, $connect);
                 break;
-            case 'compleated-tasks':
-                patchElement("CompleatedTasks", $id, $data, $connect);
+            case 'completedTasks':
+                patchElement("CompletedTasks", $id, $data, $connect);
                 break;
             case 'movers':
                 patchElement("movers", $id, $data, $connect);

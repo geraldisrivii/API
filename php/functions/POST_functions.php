@@ -17,7 +17,7 @@ function addUser($type, $data, $connect)
     if ($type === 'managers') {
         $sql = "INSERT INTO Managers (`id`, `name`, `lastName`, `login`, `password`) VALUES (NULL, '$name', '$lastName', '$login', '$password')";
     } elseif ($type === 'movers') {
-        $sql = "INSERT INTO movers (`id`, `name`, `lastName`, `login`, `password`, `isEnabled`) VALUES (NULL, '$name', '$lastName', '$login', '$password', 0)";
+        $sql = "INSERT INTO Movers (`id`, `name`, `lastName`, `login`, `password`, `isEnabled`) VALUES (NULL, '$name', '$lastName', '$login', '$password', 0)";
     }
 
     mysqli_query($connect, $sql);
