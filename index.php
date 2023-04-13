@@ -33,28 +33,25 @@ $filter = $params[3];
 
 $connect = mysqli_connect("localhost", "root", "", "LogisticProjectBD");
 
-$AvailibleTypes = [
-    'managers',
-    'movers',
-    'tasks',
-    'currentTasks',
-    'completedTasks'
-];
+$jsonFileData = file_get_contents('config.json');
+$jsonFileArray = json_decode($jsonFileData, true);
 
+$AvailibleTypesGET = $jsonFileArray['availableTypesGET'];
+$AvailibleTypesPOST = $jsonFileArray['availableTypesPOST'];
 
 
 switch ($method) {
     case 'GET':
-        GET_method($AvailibleTypes, $type, $connect, $id);
+        GET_method($AvailibleTypesGET, $type, $connect, $id);
         break;
     case 'POST':
-        POST_method($AvailibleTypes, $type, $connect, $id);
+        POST_method($AvailibleTypesPOST, $type, $connect, $id);
         break;
     case 'LINK':
         LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter);
         break;
     case 'DELETE':
-        DELETE_method($AvailibleTypes, $type, $connect, $id);
+        DELETE_method($AvailibleTypesGET, $type, $connect, $id);
         break;
     case 'PATCH':
         PATCH_method($AvailibleTypes, $type, $connect, $id);
@@ -89,6 +86,7 @@ function GET_method($AvailibleTypes, $type, $connect, $id = null)
 
 function POST_method($AvailibleTypes, $type, $connect, $id)
 {
+    checkType($type, $AvailibleTypes);
     $firstSymbol = substr($type, 0, 1);
 
     $firstSymbolCapital = mb_strtoupper($firstSymbol);
@@ -126,27 +124,19 @@ function LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter)
 
 function DELETE_method($AvailibleTypes, $type, $connect, $id)
 {
-    if (isset($id)) {
-        switch ($type) {
-            case 'tasks':
-                deleteElement("Tasks", $id, $connect);
-                break;
-            case 'currentTasks':
-                deleteElement("CurrentTasks", $id, $connect);
-                break;
-            case 'completedTasks':
-                deleteElement("CompletedTasks", $id, $connect);
-                break;
-            case 'movers':
-                deleteElement("movers", $id, $connect);
-                break;
-            case 'managers':
-                deleteElement("Managers", $id, $connect);
-            default:
-                getErorrResponse(400, "type isn't supported");
-                break;
-        }
+    CheckType($type, $AvailibleTypes);
+    
+    $firstSymbol = substr($type, 0, 1);
+
+    $firstSymbolCapital = mb_strtoupper($firstSymbol);
+
+    $DataBaseTableName = $firstSymbolCapital . substr($type, 1);
+    if(isset($id)){
+        deleteElement($DataBaseTableName, $id, $connect);
+    } else {
+        getErorrResponse(400, "ID is required");
     }
+    
 }
 
 function PATCH_method($AvailibleTypes, $type, $connect, $id)
