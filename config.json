@@ -6,12 +6,16 @@
         "currentTasks",
         "completedTasks",
         "converted_CurrentTasks",
-        "converted_CompletedTasks"
+        "converted_CompletedTasks",
+        "tokensManagers",
+        "tokensMovers"
     ],
     "availableTypesPOST": [
         "managers",
         "movers",
-        "tasks"
+        "tasks",
+        "tokensManagers",
+        "tokensMovers"
     ], 
     "availableTypesLINK": [
         "tasks"

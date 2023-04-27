@@ -27,9 +27,9 @@ $q = $_GET['q'];
 $params = explode('/', $q);
 
 $type = $params[0];
-$id = $params[1];
-$id2 = $params[2];
-$filter = $params[3];
+$param2 = $params[1];
+$param3 = $params[2];
+$param4 = $params[3];
 
 $connect = mysqli_connect("localhost", "root", "", "LogisticProjectBD");
 
@@ -43,25 +43,25 @@ $AvailibleTypesLINK = $jsonFileArray['availableTypesLINK'];
 
 switch ($method) {
     case 'GET':
-        GET_method($AvailibleTypesGET, $type, $connect, $id);
+        GET_method($AvailibleTypesGET, $type, $connect, $param2, $param3, $param4);
         break;
     case 'POST':
-        POST_method($AvailibleTypesPOST, $type, $connect, $id);
+        POST_method($AvailibleTypesPOST, $type, $connect, $param2);
         break;
     case 'LINK':
-        LINK_method($AvailibleTypesLINK, $type, $connect, $id, $id2, $filter);
+        LINK_method($AvailibleTypesLINK, $type, $connect, $param2, $param3, $param4);
         break;
     case 'DELETE':
-        DELETE_method($AvailibleTypesGET, $type, $connect, $id);
+        DELETE_method($AvailibleTypesGET, $type, $connect, $param2);
         break;
     case 'PATCH':
-        PATCH_method($AvailibleTypesGET, $type, $connect, $id);
+        PATCH_method($AvailibleTypesGET, $type, $connect, $param2);
         break;
 }
 
 
 
-function GET_method($AvailibleTypes, $type, $connect, $id = null)
+function GET_method($AvailibleTypes, $type, $connect, $param2 = null,  $param3 = null, $param4)
 {
 
     checkType($type, $AvailibleTypes);
@@ -72,18 +72,18 @@ function GET_method($AvailibleTypes, $type, $connect, $id = null)
     $sql = "SELECT * FROM $DataBaseTableName";
 
     if($type == 'converted_CurrentTasks' || $type == 'converted_CompletedTasks'){
-        getConvertedTasks($type, $connect);
-    } else if (isset($id)) {
-        $sql = $sql . " WHERE `id` = '$id'";
+        getConvertedTasks($type, $connect, $param2, $param3, $param4);
+    } else if (isset($param2)) {
+        $sql = $sql . " WHERE `id` = '$param2'";
         getDataFromID($sql, $connect);
     } elseif (count($_GET) > 1) {
-        getElementsFromData($type, $_GET, $connect);
+        getElementsFromData($DataBaseTableName, $_GET, $connect);
     } else {
         getArray($sql, $connect);
     }
 }
 
-function POST_method($AvailibleTypes, $type, $connect, $id)
+function POST_method($AvailibleTypes, $type, $connect, $param2)
 {
     checkType($type, $AvailibleTypes);
 
@@ -96,7 +96,7 @@ function POST_method($AvailibleTypes, $type, $connect, $id)
     } else {
         $data = $_POST;
     }
-    if (isset($id)) {
+    if (isset($param2)) {
         getErorrResponse(400, "ID isn't required");
     }
 
@@ -105,30 +105,30 @@ function POST_method($AvailibleTypes, $type, $connect, $id)
     addElement($DataBaseTableName, $data, $connect);
 }
 
-function LINK_method($AvailibleTypes, $type, $connect, $id, $id2, $filter)
+function LINK_method($AvailibleTypes, $type, $connect, $param2, $param3, $param4)
 {
-    if (isset($id) && isset($id2) && isset($filter)) {
-        addLink($connect, $id, $id2, $filter);
+    if (isset($param2) && isset($param3) && isset($param4)) {
+        addLink($connect, $param2, $param3, $param4);
     } else {
         getErorrResponse(400, "required fields are missing. You must send task id, mover id and filter - current or completed link");
     }
 }
 
-function DELETE_method($AvailibleTypes, $type, $connect, $id)
+function DELETE_method($AvailibleTypes, $type, $connect, $param2)
 {
     CheckType($type, $AvailibleTypes);
 
     $DataBaseTableName = UpSymbol($type);
 
-    if (isset($id)) {
-        deleteElement($DataBaseTableName, $id, $connect);
+    if (isset($param2)) {
+        deleteElement($DataBaseTableName, $param2, $connect);
     } else {
         getErorrResponse(400, "ID is required");
     }
 
 }
 
-function PATCH_method($AvailibleTypes, $type, $connect, $id)
+function PATCH_method($AvailibleTypes, $type, $connect, $param2)
 {
     checkType($type, $AvailibleTypes);
 
@@ -139,8 +139,8 @@ function PATCH_method($AvailibleTypes, $type, $connect, $id)
     if (count($data) == 0) {
         getErorrResponse(400, "Data is empty. You must send data with JSON format. FormData doesn't work");
     }
-    if (isset($id)) {
-        patchElement($DataBaseTableName, $id, $data, $connect);
+    if (isset($param2)) {
+        patchElement($DataBaseTableName, $param2, $data, $connect);
     } else {
         getErorrResponse(400, "ID is required");
     }

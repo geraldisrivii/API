@@ -16,11 +16,11 @@ function addLink($connect, $id, $id2, $filter)
 
     switch ($filter) {
         case 'current':
-            $sql = "INSERT INTO `CurrentTasks` (`id`, `user_id`, `task_id`) VALUES (NULL, '$id2', '$id')";
+            $sql = "INSERT INTO `CurrentTasks` (`id`, `user_id`, `task_id`, `status`, `timeCreated`) VALUES (NULL, '$id2', '$id', 1, CURRENT_TIMESTAMP)";
             break;
         case 'completed':
-            $sql = "INSERT INTO `CompletedTasks` (`id`, `user_id`, `task_id`) VALUES (NULL, '$id2', '$id')";
-            break;
+            $sql = "INSERT INTO `CompletedTasks` (`id`, `user_id`, `task_id`, `timeCompleted`) VALUES (NULL, '$id2', '$id', CURRENT_TIMESTAMP)";
+            break; 
     }
 
     checkRequest([$sql], "Unknown filter");
