@@ -61,7 +61,7 @@ switch ($method) {
 
 
 
-function GET_method($AvailibleTypes, $type, $connect, $param2 = null,  $param3 = null, $param4)
+function GET_method($AvailibleTypes, $type, $connect, $param2 = null)
 {
 
     checkType($type, $AvailibleTypes);
@@ -72,7 +72,7 @@ function GET_method($AvailibleTypes, $type, $connect, $param2 = null,  $param3 =
     $sql = "SELECT * FROM $DataBaseTableName";
 
     if($type == 'converted_CurrentTasks' || $type == 'converted_CompletedTasks'){
-        getConvertedTasks($type, $connect, $param2, $param3, $param4);
+        getConvertedTasks($type, $connect, $_GET);
     } else if (isset($param2)) {
         $sql = $sql . " WHERE `id` = '$param2'";
         getDataFromID($sql, $connect);

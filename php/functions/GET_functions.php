@@ -1,24 +1,20 @@
 <?php
 
 // GET
-function getConvertedTasks($type, $connect, $param2, $param3, $param4)
+function getConvertedTasks($type, $connect, $data)
 {
-
-    $period_value = $param2;
-    $period_limit = $param3;
+    $start = $data['with'];
+    $end = $data['without'];
+    $limit = $data['limit'];
+    $offset = $data['offset'];
 
     $Movers_Links = [];
     $DataBaseTableName = substr($type, strpos($type, '_') + 1);
     $sql = "SELECT * FROM $DataBaseTableName ";
 
-    $sql = $sql . "ORDER BY timeCreated DESC";
-
-    if ($period_value != null && $period_limit != null) {
-
-        $regExp = null;
-        
-        $sql = $sql . " AND currentTasks.timeCreated REGEXP '2023-04-22 11:14:29'";
-    }
+    $sql = $sql . "WHERE `timeCreated` BETWEEN '$start 00:00:00' AND '$end 23:59:59' ";
+    
+    $sql = $sql . "LIMIT " . ($limit + 1);
 
     $result = mysqli_query($connect, $sql);
 
