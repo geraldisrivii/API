@@ -40,10 +40,12 @@ $AvailibleTypesGET = $jsonFileArray['availableTypesGET'];
 $AvailibleTypesPOST = $jsonFileArray['availableTypesPOST'];
 $AvailibleTypesLINK = $jsonFileArray['availableTypesLINK'];
 
+$availableTypesStatistic = $jsonFileArray['availableTypesStatistics'];
+
 
 switch ($method) {
     case 'GET':
-        GET_method($AvailibleTypesGET, $type, $connect, $param2, $param3, $param4);
+        GET_method($AvailibleTypesGET, $type, $connect, $param2, $availableTypesStatistic);
         break;
     case 'POST':
         POST_method($AvailibleTypesPOST, $type, $connect, $param2);
@@ -61,19 +63,29 @@ switch ($method) {
 
 
 
-function GET_method($AvailibleTypes, $type, $connect, $param2 = null)
+function GET_method($AvailibleTypes, $type, $connect, $param2 = null, $availableTypesStatistic)
 {
-
-    checkType($type, $AvailibleTypes);
 
     // Converting type to DataBaseTableName
     $DataBaseTableName = UpSymbol($type);
 
+
     $sql = "SELECT * FROM $DataBaseTableName";
 
+    
     if($type == 'converted_CurrentTasks' || $type == 'converted_CompletedTasks'){
         getConvertedTasks($type, $connect, $_GET);
-    } else if (isset($param2)) {
+        return;
+    }  
+    if($_GET['start'] !== null){
+        if(isset($param2) && $type = "getMoverPrice"){
+            getUserStatistics($type, $param2,  $connect, $_GET);
+            return;
+        }
+        getStatistics($type, $connect, $_GET, $availableTypesStatistic);
+        return;
+    }
+    if (isset($param2)) {
         $sql = $sql . " WHERE `id` = '$param2'";
         getDataFromID($sql, $connect);
     } elseif (count($_GET) > 1) {

@@ -19,5 +19,9 @@
     ], 
     "availableTypesLINK": [
         "tasks"
-    ]
+    ],
+    "availableTypesStatistics": {
+        "completedTasks": ["SELECT COUNT(Tasks.id) as 'data' FROM Tasks JOIN CompletedTasks ON Tasks.id = CompletedTasks.task_id", "timeCompleted"],
+        "paidMoney": ["SELECT SUM(Tasks.price) as 'data' FROM Tasks JOIN CompletedTasks ON Tasks.id = CompletedTasks.task_id", "timeCompleted"]
+    }
 }

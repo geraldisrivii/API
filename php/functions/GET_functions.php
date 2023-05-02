@@ -1,6 +1,52 @@
 <?php
 
 // GET
+function getUserStatistics($type, $id, $connect, $data){
+    $start = $data['start'];
+    $end = $data['end'];
+
+    $sql = "SELECT `task_id`, Tasks.price,  COUNT(`user_id`) as count FROM CompletedTasks JOIN Tasks ON CompletedTasks.task_id = Tasks.id 
+    WHERE `task_id` IN (SELECT `task_id` FROM CompletedTasks WHERE `user_id` = '$id') AND `timeCompleted` BETWEEN '$start 00:00:00' AND '$end 23:59:59' GROUP BY `task_id`";
+    $result = mysqli_query($connect, $sql);
+    checkDataBaseRequest($connect, $result);
+    $countUsersFromTask = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    $finishedArray = [];
+    foreach ($countUsersFromTask as $key => $value) {
+        $finishedArray[$key]['task_id'] = $value['task_id'];
+        $finishedArray[$key]['price'] = floor($value['price'] / (int)($value['count']));
+    }
+
+    echo json_encode($finishedArray);
+}
+function GetStatistics($type, $connect, $data, $AvailibleTypes)
+{
+
+    $start = $data['start'];
+    $end = $data['end'];
+
+    $sql = null;
+    $fieldName = null;
+    foreach ($AvailibleTypes as $key => $value) {
+        if ($key == $type) {
+            $sql = $value[0];
+            $fieldName = $value[1];
+        }
+    }
+
+    $sql = $sql . " WHERE `$fieldName` BETWEEN '$start 00:00:00' AND '$end 23:59:59'";
+
+    $result = mysqli_query($connect, $sql);
+
+    CheckDataBaseRequest($connect, $result);
+
+    VerifyNotNull($result);
+
+    $object = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    echo json_encode($object);
+
+}
 function getConvertedTasks($type, $connect, $data)
 {
     $limit = $data['limit'];
@@ -9,7 +55,7 @@ function getConvertedTasks($type, $connect, $data)
     $sortType = $data['sortType'];
 
     $fieldName = null;
-
+    
     switch ($type) {
         case 'converted_CurrentTasks':
             $fieldName = 'timeCreated';
@@ -23,7 +69,7 @@ function getConvertedTasks($type, $connect, $data)
     $sql2 = "CREATE TABLE {$DataBaseTableName}Sort SELECT * FROM $DataBaseTableName ";
 
     if ($start and $end) {
-        $sql2 = $sql2 . "WHERE $fieldName BETWEEN '$start 00:00:00' AND '$end 23:59:59' ";
+        $sql2 = $sql2 . "WHERE `$fieldName` BETWEEN '$start 00:00:00' AND '$end 23:59:59' ";
     }
 
     if ($sortType === null) {

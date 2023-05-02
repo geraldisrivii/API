@@ -1,0 +1,5 @@
+
+o929363a_logPrBD - имя базы и имя пользователя. 
+пароль. 
+
+$connect = mysqli_connect("localhost", "o929363a_logprbd", "helloA1", "o929363a_logprbd");
